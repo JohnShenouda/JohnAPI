@@ -102,7 +102,96 @@ namespace API.Controllers
       }
       return users;
     }
-    [HttpPost]
+
+        [HttpGet]
+        [Route("[action]")]
+        public Users GetUserwithpass(string userID,string password)
+        {
+            var cmd = _context.Database.GetDbConnection().CreateCommand();
+            cmd.CommandText = "dbo.Userspass_DataLoad";
+            cmd.CommandType = CommandType.StoredProcedure;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            if (cmd.Connection.State != ConnectionState.Open)
+            {
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+                cmd.Connection.Open();
+            }
+
+            cmd.Parameters.Add(new SqlParameter("@UserID", userID));
+            cmd.Parameters.Add(new SqlParameter("@Password", password));
+
+            DataTable retObject = new DataTable();
+            retObject.Load(cmd.ExecuteReader());
+            Users users = new Users();
+
+            if (retObject != null && retObject.Rows.Count != 0)
+            {
+                for (int i = 0; i < retObject.Rows.Count; i++)
+                {
+
+
+                    //  users.password = ClsStringEncryptionDecryption.Decrypt(retObject.Rows[i]["Password"].ToString(), false) ;
+                    users.recid = retObject.Rows[i]["RecID"].ToString();
+                    users.fullname = retObject.Rows[i]["FullName"].ToString();
+                    users.area = retObject.Rows[i]["Area"].ToString();
+                    users.sub_area = retObject.Rows[i]["Sub_Area"].ToString();
+                    users.relation = retObject.Rows[i]["Relation"].ToString();
+                    users.gender = retObject.Rows[i]["Gender"].ToString();
+                    users.service = retObject.Rows[i]["Service"].ToString();
+                    users.floor = retObject.Rows[i]["Floor"].ToString();
+                    users.notes = retObject.Rows[i]["Notes"].ToString();
+                    users.ser = retObject.Rows[i]["ser"].ToString();
+                    users.married = retObject.Rows[i]["married"].ToString();
+                    users.tripsattend = retObject.Rows[i]["TripsAttend"].ToString();
+                    users.usechair = retObject.Rows[i]["UseChair"].ToString();
+                    users.needhelp = retObject.Rows[i]["NeedHelp"].ToString();
+                    users.sleepwith = retObject.Rows[i]["SleepWith"].ToString();
+                    users.phone = retObject.Rows[i]["Phone"].ToString();
+                    users.address = retObject.Rows[i]["Address"].ToString();
+                    users.retardation = retObject.Rows[i]["Retardation"].ToString();
+                    users.dob = retObject.Rows[i]["DOB"].ToString();
+                    users.listening = retObject.Rows[i]["listening"].ToString();
+                    users.seeing = retObject.Rows[i]["seeing"].ToString();
+                    users.speaking = retObject.Rows[i]["speaking"].ToString();
+                    users.eating = retObject.Rows[i]["eating"].ToString();
+                    users.medicine = retObject.Rows[i]["medicine"].ToString();
+                    users.crisis = retObject.Rows[i]["crisis"].ToString();
+                    users.healthy = retObject.Rows[i]["healthy"].ToString();
+                    users.listen = retObject.Rows[i]["listen"].ToString();
+                    users.speak = retObject.Rows[i]["speak"].ToString();
+                    users.eat = retObject.Rows[i]["eat"].ToString();
+                    users.see = retObject.Rows[i]["see"].ToString();
+                    users.health = retObject.Rows[i]["health"].ToString();
+                    users.medicaments = retObject.Rows[i]["medicaments"].ToString();
+                    users.panic = retObject.Rows[i]["panic"].ToString();
+                    users.age = retObject.Rows[i]["age"].ToString();
+                    users.retardationreason = retObject.Rows[i]["retardationreason"].ToString();
+                    users.study = retObject.Rows[i]["study"].ToString();
+                    users.job = retObject.Rows[i]["job"].ToString();
+                    users.parents = retObject.Rows[i]["parents"].ToString();
+                    users.marital = retObject.Rows[i]["marital"].ToString();
+                    users.confession = retObject.Rows[i]["confession"].ToString();
+                    users.ziina = retObject.Rows[i]["ziina"].ToString();
+                    users.entrydate = retObject.Rows[i]["EntryDate"].ToString();
+                    users.hellp = retObject.Rows[i]["Hellp"].ToString();
+                    users.number_of_hellpers = retObject.Rows[i]["Number_of_Hellpers"].ToString();
+                    users.groups = retObject.Rows[i]["Groups"].ToString();
+                    users.needcar = retObject.Rows[i]["NeedCar"].ToString();
+                    users.userid = retObject.Rows[i]["UserID"].ToString();
+                    users.username = retObject.Rows[i]["UserName"].ToString();
+                    users.password = retObject.Rows[i]["Password"].ToString();
+
+                    string kk = retObject.Rows[i]["ITPicture"].ToString();
+                    if (retObject.Rows[i]["ITPicture"] != DBNull.Value || retObject.Rows[i]["ITPicture"].ToString() != "")
+                        users.itpicture = ((byte[])retObject.Rows[i]["ITPicture"]);
+
+
+                }
+            }
+            return users;
+        }
+
+        [HttpPost]
     [Route("[action]")]
     public Users AddUserImags(Users users)
     {
