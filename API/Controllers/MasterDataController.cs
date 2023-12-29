@@ -23,15 +23,11 @@ namespace API.Controllers
             var cmd = _context.Database.GetDbConnection().CreateCommand();
             cmd.CommandText = "dbo.GetMasterData";
             cmd.CommandType = CommandType.StoredProcedure;
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
             if (cmd.Connection.State != ConnectionState.Open)
             {
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-                cmd.Connection.Open();
+                 cmd.Connection.Open();
             }
-
             cmd.Parameters.Add(new SqlParameter("@Type", WK_Type));
-
             DataTable retObject = new DataTable();
             retObject.Load(cmd.ExecuteReader());
             List<MasterData> MasterDataList = new List<MasterData>();
@@ -51,5 +47,40 @@ namespace API.Controllers
             return MasterDataList;
         }
 
+
+
+
+
+        [HttpGet]
+        [Route("[action]")]
+
+        public IEnumerable<HomesInfo> Homedatalist(string WK_Type)
+        {
+            var cmd = _context.Database.GetDbConnection().CreateCommand();
+            cmd.CommandText = "dbo.HomeList";
+            cmd.CommandType = CommandType.StoredProcedure;
+            if (cmd.Connection.State != ConnectionState.Open)
+            {
+                cmd.Connection.Open();
+            }
+            cmd.Parameters.Add(new SqlParameter("@Type", WK_Type));
+            DataTable retObject = new DataTable();
+            retObject.Load(cmd.ExecuteReader());
+            List<HomesInfo> HomesInfolist = new List<HomesInfo>();
+
+            if (retObject != null && retObject.Rows.Count != 0)
+            {
+                for (int i = 0; i < retObject.Rows.Count; i++)
+                {
+                    HomesInfo HomesInfo = new HomesInfo();
+
+                    //  users.password = ClsStringEncryptionDecryption.Decrypt(retObject.Rows[i]["Password"].ToString(), false) ;
+                    HomesInfo.homeid = retObject.Rows[i]["homeid"].ToString();
+                    HomesInfo.home_name = retObject.Rows[i]["home_name"].ToString();
+                    HomesInfolist.Add(HomesInfo);
+                }
+            }
+            return HomesInfolist;
+        }
     }
 }
